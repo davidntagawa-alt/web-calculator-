@@ -1,159 +1,136 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Mini Bible Web - Jude</title>
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    background: #f4f6f8;
-    color: #2c3e50;
-  }
-  h1 {
-    color: #1a5276;
-  }
-  select, button {
-    font-size: 16px;
-    margin: 10px 10px 20px 0;
-    padding: 6px 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-  }
-  .verse {
-    margin-bottom: 10px;
-    background: #fff;
-    border-left: 4px solid #1a5276;
-    padding: 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  .verse:hover {
-    background: #eef3f8;
-  }
-  .hidden {
-    display: none;
-  }
-  #welcome {
-    background: #dff9fb;
-    padding: 15px;
-    border-radius: 10px;
-    font-size: 18px;
-    margin-bottom: 20px;
-    border-left: 5px solid #22a6b3;
-  }
+  body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
+  h1 { color: #2c3e50; text-align: center; }
+  p { font-size: 18px; line-height: 1.6; }
+  .verse { margin-bottom: 8px; }
+  .comment-section { margin-top: 40px; background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 0 8px rgba(0,0,0,0.1);}
+  input, textarea, select, button { width: 100%; margin-top: 10px; font-size: 16px; padding: 10px; border-radius: 8px; border: 1px solid #ccc; }
+  button { background-color: #2c3e50; color: white; cursor: pointer; }
+  button:hover { background-color: #34495e; }
+  .language-switch { text-align: right; margin-bottom: 10px; }
 </style>
 </head>
 <body>
 
-<h1>📖 Mini Bible Web - Livre de Jude</h1>
+<h1>📖 Mini Bible Web - Book of Jude</h1>
+<p id="welcome"></p>
 
-<div id="welcome">
-  👋 Bienvenue dans la Mini Bible Web !  
-  <br>
-  <strong>Que cette lecture t’encourage à marcher dans la foi et la lumière du Seigneur.</strong>
+<div class="language-switch">
+  <label for="langSelect">🌍 Language:</label>
+  <select id="langSelect">
+    <option value="en">English (KJV)</option>
+    <option value="fr">Français (Louis Segond)</option>
+  </select>
 </div>
-
-<label for="languageSelect">Langue :</label>
-<select id="languageSelect">
-  <option value="fr">Français</option>
-  <option value="en">English</option>
-</select>
-
-<label for="bookSelect">Livre :</label>
-<select id="bookSelect">
-  <option value="jude">Jude</option>
-</select>
-
-<label for="chapterSelect">Chapitre :</label>
-<select id="chapterSelect">
-  <option value="1">1</option>
-</select>
 
 <div id="content"></div>
 
+<div class="comment-section">
+  <h2>💬 Leave a Comment</h2>
+  <p>Your thoughts will be sent directly to the page owner on WhatsApp.</p>
+  <input type="text" id="name" placeholder="Your Name">
+  <textarea id="message" rows="4" placeholder="Write your comment..."></textarea>
+  <button onclick="sendToWhatsApp()">Send Comment</button>
+</div>
+
 <script>
-  // --- Texte de la Bible ---
-  const bible = {
-    fr: {
-      jude: {
-        1: [
-          "Jude, serviteur de Jésus-Christ et frère de Jacques, à ceux qui sont appelés, aimés de Dieu le Père et gardés pour Jésus-Christ :",
-          "Que la miséricorde, la paix et l’amour vous soient multipliés !",
-          "Bien-aimés, je sentais le besoin de vous écrire afin de vous exhorter à lutter pour la foi qui a été transmise aux saints une fois pour toutes.",
-          "Car certains hommes se sont glissés parmi vous, hommes méprisables, qui changent en débauche la grâce de notre Dieu et renient Jésus-Christ, notre seul Maître et Seigneur.",
-          "Je veux vous rappeler, même si vous le savez déjà, que le Seigneur, après avoir délivré le peuple du pays d’Égypte, fit périr ceux qui ne crurent pas.",
-          "Il a aussi réservé pour le jugement des ténèbres éternelles les anges qui n’ont pas gardé leur dignité, mais ont abandonné leur propre demeure.",
-          "De même, Sodome et Gomorrhe et les villes voisines, qui ont suivi leur exemple, sont livrées à la destruction, comme en témoignage de ce qui arrivera aux impies.",
-          "Ces hommes sont des nuées sans eau, des vents emportés par la tempête ; des astres errants pour qui est réservée l’obscurité éternelle.",
-          "Quant à l’archange Michel, lorsqu’il contestait le diable et disputait au sujet du corps de Moïse, il n’osa pas porter contre lui un jugement injurieux, mais dit : 'Que le Seigneur te réprime !'",
-          "Mais ces hommes, parlant mal des choses qu’ils ne connaissent pas, sont détruits par ce qu’ils connaissent naturellement, comme des bêtes irrationnelles."
-        ]
-      }
-    },
-    en: {
-      jude: {
-        1: [
-          "Jude, a servant of Jesus Christ and brother of James, to those who are called, loved by God the Father, and kept for Jesus Christ:",
-          "May mercy, peace, and love be multiplied to you!",
-          "Beloved, although I was eager to write to you about our common salvation, I found it necessary to write appealing to you to contend for the faith that was once for all delivered to the saints.",
-          "For certain people have crept in unnoticed who long ago were designated for this condemnation, ungodly people, who pervert the grace of our God into sensuality and deny our only Master and Lord, Jesus Christ.",
-          "Now I want to remind you, although you once fully knew it, that Jesus, who saved a people out of the land of Egypt, afterward destroyed those who did not believe.",
-          "And the angels who did not stay within their own position of authority, but left their proper dwelling, he has kept in eternal chains under gloomy darkness until the judgment of the great day.",
-          "Just as Sodom and Gomorrah and the surrounding cities, which likewise indulged in sexual immorality and pursued unnatural desire, serve as an example by undergoing a punishment of eternal fire.",
-          "These are waterless clouds, swept along by winds; for them the gloom of utter darkness has been reserved forever.",
-          "But when the archangel Michael, contending with the devil, disputed about the body of Moses, he did not presume to pronounce a blasphemous judgment, but said, 'The Lord rebuke you!'",
-          "But these people blaspheme all that they do not understand, and they are destroyed by all that they, like unreasoning animals, understand instinctively."
-        ]
-      }
-    }
+  // Welcome message
+  const welcomeMsg = {
+    en: "Welcome! 🌿 May the reading of the Book of Jude strengthen your faith.",
+    fr: "Bienvenue ! 🌿 Que la lecture du livre de Jude fortifie ta foi."
   };
 
-  const languageSelect = document.getElementById('languageSelect');
-  const bookSelect = document.getElementById('bookSelect');
-  const chapterSelect = document.getElementById('chapterSelect');
+  // Versets complets
+  const verses = {
+    en: [
+"1. Jude, the servant of Jesus Christ, and brother of James, to them that are sanctified by God the Father, and preserved in Jesus Christ, and called:",
+"2. Mercy unto you, and peace, and love, be multiplied.",
+"3. Beloved, when I gave all diligence to write unto you of the common salvation, it was needful for me to write unto you, and exhort you that ye should earnestly contend for the faith which was once delivered unto the saints.",
+"4. For there are certain men crept in unawares, who were before of old ordained to this condemnation, ungodly men, turning the grace of our God into lasciviousness, and denying the only Lord God, and our Lord Jesus Christ.",
+"5. I will therefore put you in remembrance, though ye once knew this, how that the Lord, having saved the people out of the land of Egypt, afterward destroyed them that believed not.",
+"6. And the angels which kept not their first estate, but left their own habitation, he hath reserved in everlasting chains under darkness unto the judgment of the great day.",
+"7. Even as Sodom and Gomorrha, and the cities about them in like manner, giving themselves over to fornication, and going after strange flesh, are set forth for an example, suffering the vengeance of eternal fire.",
+"8. Likewise also these filthy dreamers defile the flesh, despise dominion, and speak evil of dignities.",
+"9. Yet Michael the archangel, when contending with the devil he disputed about the body of Moses, durst not bring against him a railing accusation, but said, The Lord rebuke thee.",
+"10. But these speak evil of those things which they know not: but what they know naturally, as brute beasts, in those things they corrupt themselves.",
+"11. Woe unto them! for they have gone in the way of Cain, and ran greedily after the error of Balaam for reward, and perished in the gainsaying of Core.",
+"12. These are spots in your feasts of charity, when they feast with you, feeding themselves without fear: clouds they are without water, carried about of winds; trees whose fruit withereth, without fruit, twice dead, plucked up by the roots;",
+"13. Raging waves of the sea, foaming out their own shame; wandering stars, to whom is reserved the blackness of darkness for ever.",
+"14. And Enoch also, the seventh from Adam, prophesied of these, saying, Behold, the Lord cometh with ten thousands of his saints,",
+"15. To execute judgment upon all, and to convince all that are ungodly among them of all their ungodly deeds which they have ungodly committed, and of all their hard speeches which ungodly sinners have spoken against him.",
+"16. These are murmurers, complainers, walking after their own lusts; and their mouth speaketh great swelling words, having men’s persons in admiration because of advantage.",
+"17. But, beloved, remember ye the words which were spoken before of the apostles of our Lord Jesus Christ;",
+"18. How that they told you there should be mockers in the last time, who should walk after their own ungodly lusts.",
+"19. These be they who separate themselves, sensual, having not the Spirit.",
+"20. But ye, beloved, building up yourselves on your most holy faith, praying in the Holy Ghost,",
+"21. Keep yourselves in the love of God, looking for the mercy of our Lord Jesus Christ unto eternal life.",
+"22. And of some have compassion, making a difference:",
+"23. And others save with fear, pulling them out of the fire; hating even the garment spotted by the flesh.",
+"24. Now unto him that is able to keep you from falling, and to present you faultless before the presence of his glory with exceeding joy,",
+"25. To the only wise God our Saviour, be glory and majesty, dominion and power, both now and ever. Amen."
+    ],
+    fr: [
+"1. Jude, serviteur de Jésus-Christ et frère de Jacques, à ceux qui sont appelés, aimés en Dieu le Père et gardés pour Jésus-Christ :",
+"2. Que la miséricorde, la paix et l’amour vous soient multipliés !",
+"3. Bien-aimés, je sentais le besoin de vous écrire afin de vous exhorter à lutter pour la foi qui a été transmise aux saints une fois pour toutes.",
+"4. Car certains hommes se sont glissés parmi vous, des impies, qui changent en débauche la grâce de notre Dieu et renient notre seul Maître et Seigneur Jésus-Christ.",
+"5. Je veux vous rappeler, même si vous le savez déjà, que le Seigneur, après avoir délivré le peuple du pays d’Égypte, fit périr ceux qui ne crurent pas.",
+"6. Il a aussi réservé pour le jugement des ténèbres éternelles les anges qui n’ont pas gardé leur dignité, mais ont abandonné leur propre demeure.",
+"7. De même, Sodome et Gomorrhe et les villes voisines, qui ont suivi leur exemple, sont livrées à la destruction, comme en témoignage de ce qui arrivera aux impies.",
+"8. Ces hommes sont des nuées sans eau, des vents emportés par la tempête; des astres errants pour qui est réservée l’obscurité éternelle.",
+"9. Quant à l’archange Michel, lorsqu’il contestait le diable et disputait au sujet du corps de Moïse, il n’osa pas porter contre lui un jugement injurieux, mais dit : 'Que le Seigneur te réprime !'",
+"10. Mais ces hommes, parlant mal des choses qu’ils ne connaissent pas, sont détruits par ce qu’ils connaissent naturellement, comme des bêtes irrationnelles.",
+"11. Malheur à eux ! Car ils ont suivi la voie de Caïn, ont couru après le gain de Balaam et se sont perdus dans la rébellion de Coré.",
+"12. Ce sont des taches dans vos agapes, se régalant eux-mêmes sans crainte, des nuages sans eau, emportés par le vent; des arbres d’automne, sans fruit, deux fois morts, déracinés;",
+"13. Des vagues de la mer, mugissantes, écumantes leurs propres ignominies; des étoiles errantes, pour qui l’obscurité éternelle est réservée.",
+"14. C’est aussi pour eux qu’Hénok, le septième depuis Adam, a prophétisé, en disant : 'Voici, le Seigneur est venu avec ses myriades de saints.'",
+"15. Pour faire comparaître tous les hommes devant lui pour les juger, et condamner tous les impies à toutes les œuvres impies qu’ils ont commises, et pour toutes les paroles injurieuses qu’ont proférées contre lui les pécheurs impies.",
+"16. Ce sont des murmureurs, des querelleurs, se régalant de leurs propres convoitises, et leurs lèvres disent des paroles hautaines, ils flattent les autres pour obtenir leurs intérêts.",
+"17. Mais vous, bien-aimés, souvenez-vous des paroles dites auparavant par les apôtres de notre Seigneur Jésus-Christ;",
+"18. Ils vous disaient que dans les derniers temps il y aurait des moqueurs, marchant selon leurs convoitises impies.",
+"19. Ce sont ceux qui divisent, qui suivent leurs instincts charnels, qui ne possèdent pas l’Esprit.",
+"20. Mais vous, bien-aimés, construisez-vous sur votre très sainte foi, priez dans le Saint-Esprit,",
+"21. Gardez-vous dans l’amour de Dieu, attendant la miséricorde de notre Seigneur Jésus-Christ pour la vie éternelle.",
+"22. Et ayez pitié de certains, les en retirant avec crainte;",
+"23. Et sauvez d’autres, les arrachant au feu, et ayez pitié avec crainte, haïssant jusqu’au vêtement souillé par la chair.",
+"24. À celui qui peut vous garder de toute chute, et vous présenter irréprochables avec joie devant sa gloire,",
+"25. À Dieu seul, notre Sauveur, par Jésus-Christ notre Seigneur, gloire, majesté, force et puissance, avant tous les siècles, maintenant et pour tous les siècles. Amen."
+    ]
+  };
+
   const contentDiv = document.getElementById('content');
-  const welcomeDiv = document.getElementById('welcome');
+  const welcome = document.getElementById('welcome');
+  const langSelect = document.getElementById('langSelect');
 
-  function displayChapter() {
-    const lang = languageSelect.value;
-    const book = bookSelect.value;
-    const chapter = chapterSelect.value;
-    const verses = bible[lang][book][chapter];
-
+  function displayBible(lang) {
     contentDiv.innerHTML = '';
-    welcomeDiv.style.display = 'none'; // cacher le message après ouverture
-
-    verses.forEach((verse, i) => {
-      const p = document.createElement('div');
+    welcome.textContent = welcomeMsg[lang];
+    verses[lang].forEach(v => {
+      const p = document.createElement('p');
       p.className = 'verse';
-      p.innerHTML = `<strong>${i + 1}</strong> Cliquez pour afficher`;
-      
-      const span = document.createElement('span');
-      span.textContent = " " + verse;
-      span.className = 'hidden';
-      p.appendChild(span);
-
-      p.addEventListener('click', () => {
-        span.classList.toggle('hidden');
-        if (!span.classList.contains('hidden')) {
-          p.firstChild.textContent = `${i + 1} `;
-        } else {
-          p.firstChild.textContent = `${i + 1} Cliquez pour afficher`;
-        }
-      });
-
+      p.textContent = v;
       contentDiv.appendChild(p);
     });
   }
 
-  languageSelect.addEventListener('change', displayChapter);
-  bookSelect.addEventListener('change', displayChapter);
-  chapterSelect.addEventListener('change', displayChapter);
+  langSelect.addEventListener('change', () => displayBible(langSelect.value));
+  displayBible('en'); // English par défaut
 
-  // Message d’accueil initial
-  welcomeDiv.style.display = 'block';
+  function sendToWhatsApp() {
+    const name = document.getElementById('name').value.trim();
+    const message = document.getElementById('message').value.trim();
+    if (!name || !message) { alert("Please enter your name and message."); return; }
+    const text = `New Bible Comment from ${name}:%0A%0A${message}`;
+    const phone = "250736618871";
+    const url = `https://wa.me/${phone}?text=${text}`;
+    window.open(url, "_blank");
+  }
+
 </script>
 
 </body>
